@@ -1,0 +1,244 @@
+$(document).ready(function(){
+	load();
+})
+function load(){
+   	var app= angular.module('myApp', []);
+	app.directive('select2part',function() {
+		return{
+			restrict: 'A',
+			link:function($scope, element, attrs) {
+					$(element).select2();
+					$(element).on('select2:select', function (evt) {
+						$scope.$apply(function(){
+							$scope.selected.part=$(element).select2("val");
+						});
+					});	
+			}
+		};
+	});
+        app.directive('select2lot',function() {
+                return{                                 
+                        restrict: 'A',                  
+                        link:function($scope, element, attrs) {         
+                                        $(element).select2();           
+                                        $(element).on('select2:select', function (evt) {
+                                                $scope.$apply(function(){
+                                                        $scope.selected.lot=$(element).select2("val");
+                                                });
+                                        });
+                        }                                               
+                };                                      
+        });
+        app.directive('select2wafer',function() {
+                return{                                 
+                        restrict: 'A',                  
+                        link:function($scope, element, attrs) {         
+                                        $(element).select2();           
+                                        $(element).on('select2:select', function (evt) {
+                                                $scope.$apply(function(){
+                                                        $scope.selected.wafer=$(element).select2("val");
+                                                });
+                                        });
+                        }                                               
+                };                                      
+        });
+        app.directive('select2pass',function() {
+                return{                                 
+                        restrict: 'A',                  
+                        link:function($scope, element, attrs) {         
+                                        $(element).select2();           
+                                        $(element).on('select2:select', function (evt) {
+                                                $scope.$apply(function(){
+                                                        $scope.selected.pass=$(element).select2("val");
+                                                });
+                                        });
+                        }                                               
+                };                                      
+        });
+        app.directive('bodymap',function() {
+                return {
+                        restrict: 'A',
+                        link:function($scope, element, attrs) {
+					$scope.move = false;
+					var isDown      = false;// 是否能够移动
+					var initialLeft = 0; // 鼠标摁下时的坐标
+					var initialTop  = 0;
+					var divLeft     = 0; // 鼠标摁下时内部div的坐标
+					var divTop      = 0;
+					$(element).bind("mousemove", function(event){
+							var opposite = getOppositeCoor($(element), event);
+							if(isDown){
+									var divl = divLeft+(opposite.left-initialLeft);
+									var divt  = divTop+(opposite.top-initialTop);
+									$(element).children().css({'left':divl, 'top':divt});
+									$scope.move = true;
+							}
+					});
+					$(element).bind("mousedown", function(event){
+							isDown       = true;
+							$scope.move = false;
+							var opposite = getOppositeCoor($(element), event);
+							initialLeft  = opposite.left;
+							initialTop   = opposite.top;
+							divLeft      = parseInt($(element).children().css("left"));
+							divTop       = parseInt($(element).children().css("top"));
+					});
+					$(element).bind("mouseup", function(){
+							isDown      = false;
+							initialLeft = 0;
+							initialTop  = 0;
+							divLeft     = 0;
+							divTop      = 0;
+					});
+					$(element).mousewheel(function(event, delta, deltaX, deltaY) {
+						var diagonaldelta=$scope.diagonal+delta;
+						if ( diagonaldelta >=1 ) {
+							$scope.$apply(function () {
+								$scope.diagonal=diagonaldelta;
+							});
+						}
+						return false;
+					});
+					function getOppositeCoor(obj, event){
+							event = event || window.event;
+							var left = obj.offset().left;
+							var top  = obj.offset().top;
+
+							left += obj.offsetParent().offset().left;
+							top+=obj.offsetParent().offset().top; 
+
+							var OppositeCoorLeft = event.clientX-left+document.body.scrollLeft;
+							var OppositeCoorTop  = event.clientY-top+document.body.scrollTop;
+							return {'left':OppositeCoorLeft, 'top':OppositeCoorTop};
+					}
+
+                        }
+                };
+        });
+        app.controller('LotDisp',
+                function ($scope) {
+			$scope.$on('genmap-father',function(event,data){
+				$scope.$broadcast('genmap-child',data);
+				console.log("fatherget");
+			});
+			$scope.fuck=function(){
+				$scope.$broadcast('genmap-child','ssss');
+			}
+                });
+	app.controller('LotList',
+		function ($scope,$http) {
+			$scope.selected={part:'',lot:'',wafer:'',pass:''};
+			var watch=$scope.$watch('selected',function(newValue, oldValue) {
+				var changed;
+				if (newValue === oldValue) { return; }	
+				if (newValue.part != oldValue.part){
+					changed="part";
+				}else if (newValue.lot != oldValue.lot){
+					changed="lot"
+				}else if (newValue.wafer != oldValue.wafer){
+					changed="wafer"
+				}else if (newValue.pass != oldValue.pass){
+					changed="pass"
+					$scope.$emit('genmap-father',$scope.selected);
+					return;
+				}
+				$http({
+					method:"post",
+					url:"/cgi-bin/WMAP/index.pl",
+					headers: {
+						 'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'
+					},
+					transformRequest: function (data) {
+							   return $.param(data);
+					},
+					data:{
+							'operate':"select",
+							'change':changed,
+							'part':$scope.selected.part,
+                                                        'lot':$scope.selected.lot,
+                                                        'wafer':$scope.selected.wafer,
+                                                        'pass':$scope.selected.pass
+					}
+					})
+					.success(function (response) {
+							if (changed == 'part') {
+								$scope.list.lot=response.list.lot;
+								$scope.list.wafer='';
+								$scope.list.pass='';
+							}else if (changed == 'lot') {
+								$scope.list.wafer=response.list.wafer;
+								$scope.list.pass='';
+							}else if (changed == 'wafer') {
+								$scope.list.pass=response.list.pass;
+							}
+					});
+			},true);
+			$http({
+				method:"post",
+				url:"/cgi-bin/WMAP/index.pl",
+                                headers: {
+                                     'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'
+                                },
+                                transformRequest: function (data) {
+                                           return $.param(data);
+                                },
+                                data:{
+                                        'operate':"initial",
+                                }
+                        })
+			.success(function (response) {
+				$scope.list=response.list;
+			 });
+		});
+        app.controller('WaferMap',
+		function ($scope,$http) {
+			$scope.diagonal=12;
+			$scope.colorgrp={
+					0:'bg0',
+					1:'bg1',
+					2:"bg2",
+					3:"bg3",
+					4:"bg4",
+					5:'bg5',
+					6:'bg6',
+					7:'bg7',
+					8:'bg8',
+					9:"bg9",
+					A:"bgA",
+					B:"bgB",
+					C:"bgC",
+					D:"bgD",
+					E:"bgE",
+					F:"bgF",
+					};
+			$scope.$on=('genmap-child',function(event,data){					
+				console.log('chiildget');
+			$http({
+					method:"post",
+					url:"/cgi-bin/WMAP/wafermap.pl",
+					headers: {
+							  'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'
+					},
+					transformRequest: function (data) {
+							return $.param(data);
+					},
+					data:{
+					'part':data.part,
+					'lot':data.lot,
+					'wafer':data.wafer,
+					'pass':data.pass,
+					'layer':$scope.layer
+					}
+					})
+                        .success(function (data,hearer,config,status) {
+                                $scope.map=data.map;
+				$scope.color=data.color;
+			 });
+			});
+			$scope.click=function(x,y){
+				if ( $scope.move == false ) {
+					alert("x:"+x +",y:"+y);
+				}
+			}
+    		});
+}

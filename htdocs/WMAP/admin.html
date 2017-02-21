@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html ng-app="myApp" ng-controller="admin">
+	<head>
+		<title>Welcome To RealView</title>
+		<meta charset="utf-8">
+	        <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+		<link href="./css/bootstrap.css" type="text/css" rel="stylesheet">
+                <link rel="stylesheet" href="dist/ladda-themeless.min.css">
+		<script src="./js/jquery-1.11.3.js"></script>
+        	<script src="./js/bootstrap.min.js"></script>
+        	<script src="./js/admin.js"></script>
+		<script src="./js/angular.js"></script>
+		<script src="dist/spin.min.js"></script>
+                <script src="dist/ladda.min.js"></script>
+		<style>
+		</style>
+	</head>
+	<body>
+		<br>
+				<div class="container"> 
+		            <div id="menu-title">                                
+						<h1 class="text-center">Welcome to Equiment Status Systerm</h1>
+                                <!--<h4 class="text-center">sessionID</h4>-->
+					</div>          
+					<br>
+					<br>
+                    <div class="clearfix">                        
+						<nav class="navbar navbar-default" role="navigation">
+                            <ul class="nav navbar-nav container">
+								<li class="col-md-3"><a class="text-center" href="index.html">状态</a></li>
+								<li class="col-md-3"><a class="text-center" href="history.html">历史</a></li>
+								<li class="col-md-3"><a class="text-center" href="report.html">报告</a></li>
+								<li class="active col-md-3"><a class="text-center" href="admin.html">管理</a></li>
+                             </ul>
+						</nav>
+					</div>
+				<div id=operate>
+					 <form name="form1" id="form1">
+						<div class="input-group col-md-3 -offset-2 pull-left">
+				            <button type="button" class="btn btn-primary" data-style="zoom-in" ng-click="add()">
+                                       <span >Add Equiment</span>
+					      <!--                                          <div class="input-group col-md-3 -offset-2 pull-left">
+                                            <button type="button" id="shutdown" class="ladda-button btn btn-primary" data-style="zoom-in">
+                                        <span class="ladda-label">Shut Down System</span>
+-->
+
+                            </button>	
+						</div>
+					</form >
+				<br>
+				<br>
+				</div>
+					<table  id="mytable" class="table table-bordered text-center table-hover" style="table-layout:fixed;">
+						  <colgroup>   
+							<col class="col-md-2 col-md" ></col>
+							<col></col>                         
+							<col class="col-md-2 col-md" ></col>
+							<col></col>                         
+							<col></col>
+							<col class="col-md-2 col-md" ></col>
+						  </colgroup>                                   
+							<tr>    
+									<th class="text-center">Equiment</th>
+									<th class="text-center">Owner</th>
+									<th class="text-center">IP</th>
+									<th class="text-center">Port</th>
+									<th class="text-center">Stick</th>
+									<th class="text-center">Operate</th>
+							</tr>
+									<tr ng-repeat="x in result" >
+										<td>{{x.equiment}}</td>
+										<td>{{x.owner}}</td>
+										<td>{{x.ip}}</td>
+										<td>{{x.port}}</td>
+										<td>
+										<button type="button" value="stick" ng-click="stick(x)") ng-class="{true:'btn btn-info',false:'btn btn-warning'}[x.istick]">{{x.stick}}</button>
+										</td>
+										<td>
+										<button type="button" value="modify" ng-click="modify(x,$index)" class="btn btn-primary"><span>Modify</span></button>
+										<button type="button" value="delete" ng-click="delete(x,$index)" class="btn btn-success"><span>Delete</span></button>
+										</td>
+									</tr>
+
+					</table>
+                </div>
+				<div class="modal fade" id="delete_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"  ng-controller="customerDelete">
+				   <div class="modal-dialog">
+					  <div class="modal-content">
+						 <div class="modal-header">
+							<button type="button" class="close" 
+							   data-dismiss="modal" aria-hidden="true">
+								  &times;
+							</button>
+							<h4 class="modal-title" id="myModalLabel">
+								删除
+							</h4>
+						 </div>
+						 <div class="modal-body">
+						<div>Do you confirmed delete this recored？</div>
+						 </div>
+						 <div class="modal-footer">
+							<button type="button" class="btn btn-default" 
+							   data-dismiss="modal">Cancel
+							</button>
+							<button type="button" id="delete" class="btn btn-primary" ng-click="delet()" >
+							   Delete
+							</button>
+						 </div>
+					 </div>
+					</div>
+				</div>
+				 <div class="modal fade" id="modify_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" ng-controller="customermodify">
+				   <div class="modal-dialog">
+					  <div class="modal-content">
+						 <div class="modal-header">
+							<button type="button" class="close" 
+							   data-dismiss="modal" aria-hidden="true">
+								  &times;
+							</button>
+							<h4 class="modal-title" id="myModalLabel">
+								Modify
+							</h4>
+						 </div>
+						 <div class="modal-body">
+						<form name="form" id="form_modify">
+									 <div class="input-group col-md-6 col-md pull-left">
+														<span class="input-group-addon">Equiment:</span>
+														<input type="text" class="form-control" ng-model="data.equiment" placeholder={{data.scope.equiment}}>
+												</div>		
+								 <div class="input-group col-md-6 col-md pull-left">
+														<span class="input-group-addon">Owner:</span>
+														<input type="text" class="form-control" ng-model="data.owner" placeholder={{data.scope.owner}}>
+												</div> 
+								  <div class="input-group col-md-6 col-md pull-left">
+														<span class="input-group-addon">IP:</span>
+														<input type="text" class="form-control" ng-model="data.ip" placeholder={{data.scope.ip}}>
+												</div> 
+								  <div class="input-group col-md-6 col-md pull-left">
+														<span class="input-group-addon">Port:</span>
+														<input type="text"  class="form-control" ng-model="data.port" placeholder={{data.scope.port}}>
+												</div> 
+						</form>
+						 </div>
+						 <div class="modal-footer">
+							<button type="button" class="btn btn-default" 
+							   data-dismiss="modal">Cancel
+							</button>
+							<button type="button" id="modify" class="btn btn-primary" ng-click="modif()">
+							  Modify
+							</button>
+						 </div>
+					</div>
+				</div>
+			</div>
+			<div class="modal fade" id="add_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" ng-controller="customerAdd">
+				   <div class="modal-dialog">
+					  <div class="modal-content">
+						 <div class="modal-header">
+							<button type="button" class="close" 
+							   data-dismiss="modal" aria-hidden="true">
+								  &times;
+							</button>
+							<h4 class="modal-title" id="myModalLabel">
+								Add New Equiment
+							</h4>
+						 </div>
+						 <div class="modal-body">
+						<form name="form" id="form_add">
+                                                                         <div class="input-group col-md-6 col-md pull-left">
+                                                                                                                <span class="input-group-addon">Equiment:</span>
+                                                                                                                <input type="text"id= "modal_equiment" class="form-control" ng-model="equiment">
+                                                                                                </div>
+                                                                 <div class="input-group col-md-6 col-md pull-left">
+                                                                                                                <span class="input-group-addon">Owner:</span>
+                                                                                                                <input type="text"id= "modal_owner" class="form-control" ng-model="owner">
+                                                                                                </div>
+                                                                  <div class="input-group col-md-6 col-md pull-left">
+                                                                                                                <span class="input-group-addon">IP:</span>
+                                                                                                                <input type="text"id= "modal_ip" class="form-control" ng-model="ip">
+                                                                                                </div>
+                                                                  <div class="input-group col-md-6 col-md pull-left">
+                                                                                                                <span class="input-group-addon">Port:</span>
+                                                                                                                <input type="text"id= "modal_port" class="form-control" ng-model="port">
+                                                                                                </div>
+
+						</form>
+						 </div>
+						 <div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="reset()">Cancel
+							</button>
+							<button type="button" id="add" class="btn btn-primary" ng-click="add()">
+									 <span class="ladda-label">Add</span>
+							</button>
+						 </div>
+					</div>
+				</div>
+			</div>	
+<script>
+</script>
+	</body>
+</html>

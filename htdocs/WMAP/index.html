@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html ng-app="myApp" >
+	<head>
+		<title>Lot dispo</title>
+		<meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+		<link href="./css/bootstrap.css" type="text/css" rel="stylesheet">
+		<link href="./dist/select2.min.css" type="text/css" rel="stylesheet">
+		<script src="./js/jquery-1.11.3.js"></script>
+		<script src="./js/bootstrap.min.js"></script>
+		<script src="./js/index.js"></script>
+		<script src="./js/angular.js"></script>
+		<script src="./dist/jquery.mousewheel.js"></script>
+		<script src="./dist/select2.full.min.js"></script>
+		<style>
+			 *{margin:0; padding:0;}
+			html,body{
+				 -webkit-text-size-adjust:none;
+			}
+			.bg0{background-color:#66B3FF}
+			.bg1{background-color:#33CCAE}
+			.bg2{background-color:#09F7F7}
+			.bg3{background-color:#CAFF70}
+			.bg4{background-color:#57C43C}
+			.bg5{background-color:#CDAD00}
+			.bg6{background-color:#FFFF00}
+			.bg7{background-color:#FFC125}
+			.bg8{background-color:#FF8C00}
+			.bg9{background-color:#FF4500}
+			.bgA{background-color:#FFE4C4}
+			.bgB{background-color:#FFD39B}
+			.bgC{background-color:#EE6AA7}
+			.bgD{background-color:#EEAEEE}
+			.bgE{background-color:#CD3700}
+			.bgF{background-color:#EE3A8C}
+            .bgI{background-color:#FFF0F5}
+			*.unselectable {
+   					-moz-user-select: -moz-none;
+   					-khtml-user-select: none;
+   					-webkit-user-select: none;
+   					-ms-user-select: none;
+   					user-select: none;
+			}
+			.zndex {
+					position:absolute;
+					z-index:100;
+			}
+		</style>
+	</head>
+	<body>
+		<div ng-controller="LotDisp" >
+			<div loading class="zndex" style="display:none;">
+				<img src='./images/loading.gif' width="30" height="30" />
+			</div>
+			<div class="col-xs-2" ng-controller="LotList"  >
+				<div class="row">
+				<select select2part  style="width: 80%" >
+					<option disabled selected value></option>
+					<option ng-repeat="x in list.part">{{x}}</option>
+				</select>
+				</div>
+				<div class="row">
+				<select select2lot  style="width: 80%" >
+						<option disabled selected value></option>
+						<option ng-repeat="x in list.lot">{{x}}</option>
+				</select>
+				</div>
+				<div class="row">
+				<select select2wafer  style="width: 80%">
+						<option disabled selected value></option>
+						<option ng-repeat="x in list.wafer" >{{x}}</option>
+				</select>
+				</div>
+				<div class="row">
+				<select select2pass  style="width: 80%">
+						<option disabled selected value></option>
+						G<option ng-repeat="x in list.pass" value="{{$index}}" >{{x}}</option>
+				</select>
+				</div>
+			</div>
+			<div class="col-xs-9" ng-controller="WaferMap" >
+				<div class="col-xs-11">
+					<div class="panel panel-primary" style="width:100%;float:left;">
+						<div class="panel-heading">
+							<h3 class="panel-title text-center">
+								Wafer Map {{coor}}
+							</h3>
+						</div>
+						<div class="panel-body unselectable" style="height:790px;position: relative;overflow:hidden;" bodymap >
+							<div style="position: absolute; left:0; top:0;" >
+								<table style="table-layout:fixed;white-space:nowrap;overflow:hidden;width:{{ratiox*diagonal}}px">
+									<tr ng-repeat="x in map" render-finish style="height:{{ratiox/ratioy*diagonal}}px;font-family:'黑体';" >
+										<td disabled="disable" ng-repeat="y in x track by $index" ng-class="setbg(y)" style="overflow:hidden;width:{{diagonal}}px;font-size:12px;line-height:1;text-align:center;cursor:pointer;" ng-click="click($index,$parent.$index)" die="{{$index}},{{$parent.$index}}" >{{die(y)}}</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-1">
+					<div class="row" >
+					<select select2layer style="width:200px;">
+						<option value="iBinCodeLast" selected  >Hardware Bins</option>
+						<option value="fInked" >Inked</option>
+						<option value="iTestSiteLast" >Multidut Site</option>
+						<option value="iPolish" >Polish Die</option>
+						<option value="iSoftBinLast" >Software Bin</option>
+						<option value="nTouchCount" >Touchdown Counts</option>
+					</select>
+					</div>
+					<div class="panel panel-danger row " style="width:200px;height:800px;overflow:auto;">
+						<div class="panel-heading">
+						</div>
+						 <div class="panel-body unselectable" style="font-size:12px">
+							<div ng-repeat="x in wfinfo" >
+								{{x}}
+							</div>
+							<table class="table table-bordered text-center table-hover" style="border:1px">
+								<tr ng-repeat="x in diecount">
+									<td>{{x.key}}</td><td>{{x.count}}</td>
+								</tr>
+							</table>
+							<table>
+								<tr ng-repeat="x in colorlist"><td ng-class="colorgrp[x.color]">{{x.grp}}</td></tr>
+							</table>
+						</div>
+					</div>	
+				</div>
+			</div>
+	<script>
+	</script>
+	</body>
+</html>

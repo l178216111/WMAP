@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html ng-app="myApp" ng-controller="history">
+	<head>
+		<title>Welcome To ESS</title>
+		<meta charset="utf-8">
+	        <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+		<link href="./css/bootstrap.min.css" type="text/css" rel="stylesheet">
+		<link href="./css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+                <link rel="stylesheet" href="./dist/ladda-themeless.min.css">
+        	<script src="./js/jquery-1.11.3.js"></script>
+        	<script src="./js/bootstrap.min.js"></script>
+		<script src="./dist/spin.min.js"></script>
+		<script src="./dist/ladda.min.js"></script>
+		<script src="./js/history.js"></script>
+		<script src="./js/angular.js"></script>
+		<style>
+		</style>
+	</head>
+	<body>
+				 <br>
+				<div class="container"> 
+		                	<div id="menu-title">                                
+					<h1 class="text-center">Welcome to Equiment Status Systerm</h1>
+                                <!--<h4 class="text-center">sessionID</h4>-->
+                        	</div>          
+				<br>
+				<br>
+                        <div class="clearfix">                        
+	                <nav class="navbar navbar-default" role="navigation">
+                                 <ul class="nav navbar-nav container">
+                                        <li class="col-md-3"><a class="text-center" href="index.html">状态</a></li>
+                                        <li class="active col-md-3"><a class="text-center" href="history.html">历史</a></li>
+                                        <li class="col-md-3"><a class="text-center" href="report.html">报告</a></li>
+					<li class="col-md-3"><a class="text-center" href="admin.html">管理</a></li>
+                                 </ul>
+                        </nav>
+			</div>
+  <form class="form-horizontal"  role="form">
+                <div class="input-group date form_datetime col-md-3 pull-left" data-date="" data-date-format="yyyy-mm-dd HH:ii" data-link-field="dtp_input1">
+                    <input class="form-control" size="16" type="text" value="" ng-model="time" readonly>
+		    <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span>
+                </div>
+                                <div class="input-group col-md-3 pull-left">
+                                 <button type="button" id="submit_ladda" class="ladda-button btn btn-primary" ng-click="submit()" data-style="zoom-in">
+                                        <span class="ladda-label">提交</span>
+                                </button>
+                                </div>
+
+		                  <div class="input-group col-md-2  col-md-offset-1 pull-left">
+                                        <span class="input-group-addon">负责人:</span>
+                                        <select class="form-control" ng-model="owner_default" ng-change="change_ownlist(owner_default)">
+						<option ng-repeat="x in owner" >{{x}}</option>
+                                        </select>
+                                </div>
+                                  <div class="input-group col-md-2 pull-left">
+                                        <span class="input-group-addon">设备:</span>
+                                        <select class="form-control" ng-model="equiment_default" >
+                                                <option ng-repeat="e in equiment" >{{e}}</option>
+                                        </select>
+                                </div>
+
+</form>
+		<br>
+		<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+	<script type="text/javascript" src="./js/highcharts.js"></script>
+	<script type="text/javascript" src="./js/modules/exporting.js"></script>
+	<script type="text/javascript" src="./js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+	<script type="text/javascript" src="./js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+	<script type="text/javascript" src="./js/moment.js"></script> 	
+<script>
+    $('.form_datetime').datetimepicker({
+        language:  'zh-CN',
+        todayBtn:  1,
+	autoclose: 1,
+	todayHighlight:1,
+	startView: 2,
+	forceParse: 0,
+        showMeridian: 1
+    });
+</script>
+	</body>
+</html>
